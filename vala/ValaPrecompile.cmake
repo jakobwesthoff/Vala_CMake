@@ -28,12 +28,73 @@
 ##
 
 include(ParseArguments)
+find_package(Vala)
 
-# vala_precompile[output src.vala ... [PACKAGES ...] [OPTIONS ...]]
-# This macro precomiples the given vala files to .c files and puts
-# a list with the generated .c files to output.
-# packages and additional compiler options are directly passed to the
-# vala compiler.
+##
+# Compile vala files to their c equivalents for further processing. 
+#
+# The "vala_precompile" macro takes care of calling the valac executable on the
+# given source to produce c files which can then be processed further using
+# default cmake functions.
+# 
+# The first parameter provided is a variable, which will be filled with a list
+# of c files outputted by the vala compiler. This list can than be used in
+# conjuction with functions like "add_executable" or others to create the
+# neccessary compile rules with CMake.
+# 
+# The initial variable is followed by a list of .vala files to be compiled.
+# Please take care to add every vala file belonging to the currently compiled
+# project or library as Vala will otherwise not be able to resolve all
+# dependencies.
+# 
+# The following sections may be specified afterwards to provide certain options
+# to the vala compiler:
+# 
+# PACKAGES
+#   A list of vala packages/libraries to be used during the compile cycle. The
+#   package names are exactly the same, as they would be passed to the valac
+#   "--pkg=" option.
+# 
+# OPTIONS
+#   A list of optional options to be passed to the valac executable. This can be
+#   used to pass "--thread" for example to enable multi-threading support.
+#
+# CUSTOM_VAPIS
+#   A list of custom vapi files to be included for compilation. This can be
+#   useful to include freshly created vala libraries without having to install
+#   them in the system.
+#
+# GENERATE_VAPI
+#   Pass all the needed flags to the compiler to create an internal vapi for
+#   the compiled library. The provided name will be used for this and a
+#   <provided_name>.vapi file will be created.
+# 
+# GENERATE_HEADER
+#   Let the compiler generate a header file for the compiled code. There will
+#   be a header file as well as an internal header file being generated called
+#   <provided_name>.h and <provided_name>_internal.h
+#
+# The following call is a simple example to the vala_precompile macro showing
+# an example to every of the optional sections:
+#
+#   vala_precompile(VALA_C
+#		source1.vala
+#		source2.vala
+#		source3.vala
+#	PACKAGES
+#		gtk+-2.0
+#		gio-1.0
+#		posix
+#	OPTIONS
+#		--thread
+#	CUSTOM_VAPIS
+#		some_vapi.vapi
+#	GENERATE_VAPI
+#		myvapi
+#	GENERATE_HEADER
+#		myheader
+##
+
 macro(vala_precompile output)
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
 	parse_arguments(ARGS "PACKAGES;OPTIONS;GENERATE_HEADER;GENERATE_VAPI;CUSTOM_VAPIS" "" ${ARGN})
@@ -52,6 +113,17 @@ macro(vala_precompile output)
 		list(APPEND ${output} ${out_file})
 	endforeach(src ${ARGS_DEFAULT_ARGS})
 
+	set(vapi_arguments "")
+	if(ARGS_GENERATE_VAPI)
+		list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_GENERATE_VAPI}.vapi")
+		set(vapi_arguments "--internal-vapi=${ARGS_GENERATE_VAPI}.vapi")
+
+		# Header and internal header is needed to generate internal vapi
+		if (NOT ARGS_GENERATE_HEADER)
+			set(ARGS_GENERATE_HEADER ${ARGS_GENERATE_VAPI})
+		endif(NOT ARGS_GENERATE_HEADER)
+	endif(ARGS_GENERATE_VAPI)
+
 	set(header_arguments "")
 	if(ARGS_GENERATE_HEADER)
 		list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_GENERATE_HEADER}.h")
@@ -60,11 +132,6 @@ macro(vala_precompile output)
 		list(APPEND header_arguments "--internal-header=${ARGS_GENERATE_HEADER}_internal.h")
 	endif(ARGS_GENERATE_HEADER)
 
-	set(vapi_arguments "")
-	if(ARGS_GENERATE_VAPI)
-		list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_GENERATE_VAPI}.vapi")
-		set(vapi_arguments "--internal-vapi=${ARGS_GENERATE_VAPI}.vapi")
-	endif(ARGS_GENERATE_VAPI)
 
 	add_custom_command(OUTPUT ${out_files} 
 					   COMMAND ${VALA_EXECUTABLE} ARGS "-C" ${header_arguments} ${vapi_arguments}
