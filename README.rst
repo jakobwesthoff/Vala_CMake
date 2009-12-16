@@ -1,9 +1,11 @@
 ==========
 Vala CMake
 ==========
-:Authors: 
+:Author: 
     Jakob Westhoff
-:Version: Draft
+:Version:
+    Draft
+
 
 Overview
 ========
@@ -43,11 +45,16 @@ parameters like ``REQUIRED`` and ``QUIETLY`` are supported.
     find_package(VALA REQUIRED)
 
 After a successful call to the find function the following variables will be
-set::
+set:
 
-    VALA_FOUND       Whether the vala compiler has been found or not
-    VALA_EXECUTABLE  Full path to the valac executable if it has been found
-    VALA_VERSION     Version number of the available valac
+VALA_FOUND
+    Whether the vala compiler has been found or not
+
+VALA_EXECUTABLE
+    Full path to the valac executable if it has been found
+
+VALA_VERSION
+    Version number of the available valac
 
 
 Precompiling Vala sources
@@ -71,31 +78,31 @@ project or library as Vala will otherwise not be able to resolve all
 dependencies.
 
 The following sections may be specified afterwards to provide certain options
-to the vala compiler::
+to the vala compiler:
 
-    PACKAGES  
-      A list of vala packages/libraries to be used during the compile cycle. The
-      package names are exactly the same, as they would be passed to the valac
-      "--pkg=" option.
+PACKAGES  
+    A list of vala packages/libraries to be used during the compile cycle. The
+    package names are exactly the same, as they would be passed to the valac
+    "--pkg=" option.
 
-    OPTIONS
-      A list of optional options to be passed to the valac executable. This can be
-      used to pass "--thread" for example to enable multi-threading support.
+OPTIONS
+    A list of optional options to be passed to the valac executable. This can be
+    used to pass "--thread" for example to enable multi-threading support.
 
-    CUSTOM_VAPIS
-      A list of custom vapi files to be included for compilation. This can be
-      useful to include freshly created vala libraries without having to install
-      them in the system.
+CUSTOM_VAPIS
+    A list of custom vapi files to be included for compilation. This can be
+    useful to include freshly created vala libraries without having to install
+    them in the system.
 
-    GENERATE_VAPI
-      Pass all the needed flags to the compiler to create an internal vapi for
-      the compiled library. The provided name will be used for this and a
-      <provided_name>.vapi file will be created.
+GENERATE_VAPI
+    Pass all the needed flags to the compiler to create an internal vapi for
+    the compiled library. The provided name will be used for this and a
+    <provided_name>.vapi file will be created.
 
-    GENERATE_HEADER
-      Let the compiler generate a header file for the compiled code. There will
-      be a header file as well as an internal header file being generated called
-      <provided_name>.h and <provided_name>_internal.h
+GENERATE_HEADER
+    Let the compiler generate a header file for the compiled code. There will
+    be a header file as well as an internal header file being generated called
+    <provided_name>.h and <provided_name>_internal.h
 
 The following call is a simple example to the vala_precompile macro showing an
 example to every of the optional sections::
