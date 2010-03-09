@@ -12,7 +12,7 @@ Overview
 
 Vala CMake is a collection of macros for the CMake_ build system to allow the
 creation and management of projects developed using the Vala_ programming
-language.
+language or its "Genie" flavor (less tested).
 
 
 Installation
@@ -36,15 +36,15 @@ modules or use the provided find routines.
 Finding Vala
 ============
 
-The find module for vala works like any other Find specific module in CMake.
-You can simple call it using the usual ``find_package`` function. Default
+The find module for vala works like any other Find module in CMake.
+You can use it by simply calling the usual ``find_package`` function. Default
 parameters like ``REQUIRED`` and ``QUIETLY`` are supported.
 
 ::
 
-    find_package(VALA REQUIRED)
+    find_package(Vala REQUIRED)
 
-After a successful call to the find function the following variables will be
+After a successful call to the find_package function the following variables will be
 set:
 
 VALA_FOUND
@@ -157,6 +157,7 @@ dumb CMake questions.
 
 .. _CMake: http://cmake.org
 .. _Vala: http://live.gnome.org/Vala
+.. _Genie: http://live.gnome.org/Genie
 
 
 
