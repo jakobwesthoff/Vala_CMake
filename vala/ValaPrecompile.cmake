@@ -102,6 +102,7 @@ find_package(Vala REQUIRED)
 ##
 
 macro(vala_precompile output)
+    parse_arguments(ARGS "PACKAGES;OPTIONS;DIRECTORY;GENERATE_HEADER;GENERATE_VAPI;CUSTOM_VAPIS" "" ${ARGN})
     if(DIRECTORY)
         # do nothing
     else(DIRECTORY)
