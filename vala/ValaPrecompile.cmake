@@ -85,6 +85,8 @@ find_package(Vala REQUIRED)
 #       gtk+-2.0
 #       gio-1.0
 #       posix
+#   DIRECTORY
+#       gen
 #   OPTIONS
 #       --thread
 #   CUSTOM_VAPIS
@@ -100,8 +102,12 @@ find_package(Vala REQUIRED)
 ##
 
 macro(vala_precompile output)
-    include_directories(${CMAKE_CURRENT_BINARY_DIR})
-    parse_arguments(ARGS "PACKAGES;OPTIONS;GENERATE_HEADER;GENERATE_VAPI;CUSTOM_VAPIS" "" ${ARGN})
+    if(DIRECTORY)
+        # do nothing
+    else(DIRECTORY)
+        set(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    endif(DIRECTORY)
+    include_directories(${DIRECTORY})
     set(vala_pkg_opts "")
     foreach(pkg ${ARGS_PACKAGES})
         list(APPEND vala_pkg_opts "--pkg=${pkg}")
@@ -113,14 +119,14 @@ macro(vala_precompile output)
         list(APPEND in_files "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
         string(REPLACE ".vala" ".c" src ${src})
         string(REPLACE ".gs" ".c" src ${src})
-        set(out_file "${CMAKE_CURRENT_BINARY_DIR}/${src}")
-        list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${src}")
+        set(out_file "${DIRECTORY}/${src}")
+        list(APPEND out_files "${DIRECTORY}/${src}")
         list(APPEND ${output} ${out_file})
     endforeach(src ${ARGS_DEFAULT_ARGS})
 
     set(vapi_arguments "")
     if(ARGS_GENERATE_VAPI)
-        list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_GENERATE_VAPI}.vapi")
+        list(APPEND out_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}.vapi")
         set(vapi_arguments "--internal-vapi=${ARGS_GENERATE_VAPI}.vapi")
 
         # Header and internal header is needed to generate internal vapi
@@ -131,8 +137,8 @@ macro(vala_precompile output)
 
     set(header_arguments "")
     if(ARGS_GENERATE_HEADER)
-        list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_GENERATE_HEADER}.h")
-        list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_GENERATE_HEADER}_internal.h")
+        list(APPEND out_files "${DIRECTORY}/${ARGS_GENERATE_HEADER}.h")
+        list(APPEND out_files "${DIRECTORY}/${ARGS_GENERATE_HEADER}_internal.h")
         list(APPEND header_arguments "--header=${ARGS_GENERATE_HEADER}.h")
         list(APPEND header_arguments "--internal-header=${ARGS_GENERATE_HEADER}_internal.h")
     endif(ARGS_GENERATE_HEADER)
@@ -145,7 +151,7 @@ macro(vala_precompile output)
         ${header_arguments} 
         ${vapi_arguments}
         "-b" ${CMAKE_CURRENT_SOURCE_DIR} 
-        "-d" ${CMAKE_CURRENT_BINARY_DIR} 
+        "-d" ${DIRECTORY} 
         ${vala_pkg_opts} 
         ${ARGS_OPTIONS} 
         ${in_files} 

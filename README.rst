@@ -44,8 +44,8 @@ parameters like ``REQUIRED`` and ``QUIETLY`` are supported.
 
     find_package(Vala REQUIRED)
 
-After a successful call to the find_package function the following variables will be
-set:
+After a successful call to the find_package function the following variables 
+will be set:
 
 VALA_FOUND
     Whether the vala compiler has been found or not
@@ -88,6 +88,10 @@ PACKAGES
 OPTIONS
     A list of optional options to be passed to the valac executable. This can be
     used to pass "--thread" for example to enable multi-threading support.
+
+DIRECTORY
+    Specify the directory where the output source files will be stored. If 
+    ommitted, the source files will be stored in CMAKE_CURRENT_BINARY_DIR.
 
 CUSTOM_VAPIS
     A list of custom vapi files to be included for compilation. This can be
