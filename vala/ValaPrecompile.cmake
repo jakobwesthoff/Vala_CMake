@@ -125,6 +125,13 @@ macro(vala_precompile output)
         list(APPEND ${output} ${out_file})
     endforeach(src ${ARGS_DEFAULT_ARGS})
 
+    set(custom_vapi_arguments "")
+    if(ARGS_CUSTOM_VAPIS)
+    	foreach(vapi ${ARGS_CUSTOM_VAPIS})
+    		list(APPEND custom_vapi_arguments ${CMAKE_CURRENT_SOURCE_DIR}/${vapi})
+    	endforeach(vapi ${ARGS_CUSTOM_VAPIS})
+    endif(ARGS_CUSTOM_VAPIS)
+
     set(vapi_arguments "")
     if(ARGS_GENERATE_VAPI)
         list(APPEND out_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}.vapi")
@@ -156,7 +163,7 @@ macro(vala_precompile output)
         ${vala_pkg_opts} 
         ${ARGS_OPTIONS} 
         ${in_files} 
-        ${ARGS_CUSTOM_VAPIS}
+        ${custom_vapi_arguments}
     DEPENDS 
         ${in_files} 
         ${ARGS_CUSTOM_VAPIS}
