@@ -1,5 +1,22 @@
 ##
+# Find module for the Vala compiler (valac)
+#
+# This module determines wheter a Vala compiler is installed on the current
+# system and where its executable is.
+#
+# Call the module using "find_package(Vala) from within your CMakeLists.txt.
+#
+# The following variables will be set after an invocation:
+#
+#  VALA_FOUND       Whether the vala compiler has been found or not
+#  VALA_EXECUTABLE  Full path to the valac executable if it has been found
+#  VALA_VERSION     Version number of the available valac
+#  VALA_USE_FILE    Include this file to define the vala_precompile function
+##
+
+##
 # Copyright 2009-2010 Jakob Westhoff. All rights reserved.
+# Copyright 2010-2011 Daniel Pfeifer
 # 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -27,39 +44,26 @@
 # either expressed or implied, of Jakob Westhoff
 ##
 
-##
-# Find module for the Vala compiler (valac)
-#
-# This module determines wheter a Vala compiler is installed on the current
-# system and where its executable is.
-#
-# Call the module using "find_package(Vala) from within your CMakeLists.txt.
-#
-# The following variables will be set after an invocation:
-#
-#  VALA_FOUND       Whether the vala compiler has been found or not
-#  VALA_EXECUTABLE  Full path to the valac executable if it has been found
-#  VALA_VERSION     Version number of the available valac
-##
-
-
 # Search for the valac executable in the usual system paths.
-find_program(VALA_EXECUTABLE
-  NAMES valac)
+find_program(VALA_EXECUTABLE valac)
+mark_as_advanced(VALA_EXECUTABLE)
+
+# Determine the valac version
+if(VALA_EXECUTABLE)
+    execute_process(COMMAND ${VALA_EXECUTABLE} "--version" 
+                    OUTPUT_VARIABLE VALA_VERSION
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    string(REPLACE "Vala " "" VALA_VERSION "${VALA_VERSION}")
+endif(VALA_EXECUTABLE)
 
 # Handle the QUIETLY and REQUIRED arguments, which may be given to the find call.
 # Furthermore set VALA_FOUND to TRUE if Vala has been found (aka.
 # VALA_EXECUTABLE is set)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Vala DEFAULT_MSG VALA_EXECUTABLE)
+find_package_handle_standard_args(Vala
+    REQUIRED_VARS VALA_EXECUTABLE
+    VERSION_VAR VALA_VERSION)
 
-mark_as_advanced(VALA_EXECUTABLE)
+set(VALA_USE_FILE "${CMAKE_CURRENT_LIST_DIR}/UseVala.cmake")
 
-# Determine the valac version
-if(VALA_FOUND)
-    execute_process(COMMAND ${VALA_EXECUTABLE} "--version" 
-                    OUTPUT_VARIABLE "VALA_VERSION")
-    string(REPLACE "Vala" "" "VALA_VERSION" ${VALA_VERSION})
-    string(STRIP ${VALA_VERSION} "VALA_VERSION")
-endif(VALA_FOUND)
