@@ -137,6 +137,15 @@ CMake to create an executable out of it.
 
     add_executable(myexecutable ${VALA_C})
 
+Building a debug build
+======================
+In the section OPTIONS add the '-g' option. This will instruct the Vala compiler
+to include the Vala source code line information in the compiled binary. Add the
+'--save-temps' option to keep the temporary C source files.
+
+When running cmake add '-DCMAKE_BUILD_TYPE=Debug' option. After building the
+program, it can then be debugged with ``gdb`` or ``nemiver``.
+
 
 Further reading
 ===============
