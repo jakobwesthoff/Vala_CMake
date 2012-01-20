@@ -50,7 +50,7 @@
 # an example to every of the optional sections:
 #
 #   find_package(Vala "0.12" REQUIRED)
-#   inlcude(${VALA_USE_FILE})
+#   include(${VALA_USE_FILE})
 #
 #   vala_precompile(VALA_C
 #     SOURCES
