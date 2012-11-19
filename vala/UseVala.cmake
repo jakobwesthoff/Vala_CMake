@@ -110,7 +110,7 @@ function(vala_precompile output)
         "SOURCES;PACKAGES;OPTIONS;CUSTOM_VAPIS" ${ARGN})
 
     if(ARGS_DIRECTORY)
-        set(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ARGS_DIRECTORY})
+		get_filename_component(DIRECTORY ${ARGS_DIRECTORY} ABSOLUTE)
     else(ARGS_DIRECTORY)
         set(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     endif(ARGS_DIRECTORY)
