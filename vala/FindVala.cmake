@@ -44,8 +44,9 @@
 # either expressed or implied, of Jakob Westhoff
 ##
 
-# Search for the valac executable in the usual system paths.
-find_program(VALA_EXECUTABLE valac)
+# Search for the valac executable in the usual system paths
+# Some distributions rename the valac to contain the major.minor in the binary name
+find_program(VALA_EXECUTABLE NAMES valac valac-0.20 valac-0.18 valac-0.16 valac-0.14 valac 0.12 valac 0.10)
 mark_as_advanced(VALA_EXECUTABLE)
 
 # Determine the valac version
