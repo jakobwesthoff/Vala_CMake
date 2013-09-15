@@ -37,7 +37,7 @@
 #   them in the system.
 #
 # GENERATE_VAPI
-#   Pass all the needed flags to the compiler to create an internal vapi for
+#   Pass all the needed flags to the compiler to create a vapi for
 #   the compiled library. The provided name will be used for this and a
 #   <provided_name>.vapi file will be created.
 #
@@ -154,7 +154,7 @@ function(vala_precompile output)
     set(vapi_arguments "")
     if(ARGS_GENERATE_VAPI)
         list(APPEND out_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}.vapi")
-        set(vapi_arguments "--internal-vapi=${ARGS_GENERATE_VAPI}.vapi")
+        set(vapi_arguments "--vapi=${ARGS_GENERATE_VAPI}.vapi")
 
         # Header and internal header is needed to generate internal vapi
         if (NOT ARGS_GENERATE_HEADER)
